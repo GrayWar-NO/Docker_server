@@ -1,0 +1,29 @@
+
+services:
+  nuclear-option-server-compose:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    container_name: NO_Compose
+    restart: unless-stopped
+
+    ports:
+      - "27015:27015/udp"
+      - "7777:7777/udp"
+      - "7778:7778/udp"
+
+    volumes:
+      # BepInEx config files (settings.json, etc.)
+      - ./config/BepInEx/config:/home/steam/Steam/steamapps/common/NuclearOptionServer/BepInEx/config
+
+      # Dedicated server JSON config
+      - ./config/DedicatedServerConfig.json:/home/steam/Steam/steamapps/common/NuclearOptionServer/DedicatedServerConfig.json
+
+      # User missions (everything inside the folder is copied verbatim)
+      - ./config/missions:/home/steam/NuclearOption-Missions
+
+      # BepInEx plugins
+      - ./config/BepInEx/plugins:/home/steam/Steam/steamapps/common/NuclearOptionServer/BepInEx/plugins
+
