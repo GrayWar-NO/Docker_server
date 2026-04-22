@@ -27,3 +27,8 @@ services:
       # BepInEx plugins
       - ./config/BepInEx/plugins:/home/steam/Steam/steamapps/common/NuclearOptionServer/BepInEx/plugins
 
+      # Ban list file
+      - ./config/ban_list.txt:/home/steam/Steam/steamapps/common/NuclearOptionServer/ban_list.txt
+
+      # BepInEx log output
+      - ./config/BepInEx/LogOutput.log:/home/steam/Steam/steamapps/common/NuclearOptionServer/BepInEx/LogOutput.log

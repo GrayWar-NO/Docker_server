@@ -27,7 +27,6 @@ RUN ./steamcmd.sh \
 
 WORKDIR /home/steam
 
-RUN mkdir tacview
 RUN wget https://github.com/BepInEx/BepInEx/releases/download/v5.4.23.4/BepInEx_linux_x64_5.4.23.4.zip
 RUN unzip BepInEx_linux_x64_5.4.23.4.zip -d $SERVER_DIR && rm BepInEx_linux_x64_5.4.23.4.zip
 
