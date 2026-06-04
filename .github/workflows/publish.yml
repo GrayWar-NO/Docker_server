@@ -9,7 +9,7 @@ jobs:
 
     env:
       APP_ID: "3930080"
-      IMAGE_NAME: graywarno/no-server
+      IMAGE_NAME: no-server
 
     steps:
       - name: Checkout
@@ -35,7 +35,7 @@ jobs:
             -s \
             -o /dev/null \
             -w "%{http_code}" \
-            "https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}/tags/${{ steps.steam.outputs.buildid }}/")
+            "https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_REPO_OWNER }}/${IMAGE_NAME}/tags/${{ steps.steam.outputs.buildid }}/")
 
           if [ "$HTTP_CODE" = "200" ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
@@ -64,11 +64,11 @@ jobs:
         id: tags
         if: steps.check.outputs.exists != 'true'
         run: |
-          TAGS="${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${{ steps.steam.outputs.buildid }}"
-          TAGS="$TAGS,${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:latest"
+          TAGS="${{ secrets.DOCKERHUB_REPO_OWNER }}/${IMAGE_NAME}:${{ steps.steam.outputs.buildid }}"
+          TAGS="$TAGS,${{ secrets.DOCKERHUB_REPO_OWNER }}/${IMAGE_NAME}:latest"
 
           if [ -n "${{ steps.steam.outputs.version }}" ]; then
-            TAGS="$TAGS,${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${{ steps.steam.outputs.version }}"
+            TAGS="$TAGS,${{ secrets.DOCKERHUB_REPO_OWNER }}/${IMAGE_NAME}:${{ steps.steam.outputs.version }}"
           fi
 
           echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
