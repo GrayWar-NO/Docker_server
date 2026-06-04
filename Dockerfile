@@ -1,7 +1,7 @@
 # Use the official SteamCMD image as base
 FROM cm2network/steamcmd:root
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends unzip wget file
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends unzip wget file jq
 
 USER steam
 
@@ -27,8 +27,12 @@ RUN ./steamcmd.sh \
 
 WORKDIR /home/steam
 
-RUN wget https://github.com/BepInEx/BepInEx/releases/download/v5.4.23.4/BepInEx_linux_x64_5.4.23.4.zip
-RUN unzip BepInEx_linux_x64_5.4.23.4.zip -d $SERVER_DIR && rm BepInEx_linux_x64_5.4.23.4.zip
+RUN set -eux; \
+    BEPINEX_URL=$(wget -qO- https://api.github.com/repos/BepInEx/BepInEx/releases/latest \
+        | jq -r '.assets[] | select(.name | test("^BepInEx_linux_x64_.*\\.zip$")) | .browser_download_url'); \
+    wget -O /tmp/bepinex.zip "$BEPINEX_URL"; \
+    unzip /tmp/bepinex.zip -d "$SERVER_DIR"; \
+    rm /tmp/bepinex.zip
 
 RUN chmod +x $SERVER_DIR/run_bepinex.sh
 
@@ -42,4 +46,3 @@ RUN chmod +x /home/steam/entry.sh && chown steam:steam /home/steam/entry.sh
 
 USER steam
 CMD ["/home/steam/entry.sh"]
-
