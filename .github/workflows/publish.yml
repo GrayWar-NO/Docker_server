@@ -1,0 +1,95 @@
+name: Publish Docker Image
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ID: "3930080"
+      IMAGE_NAME: nuclear-option-server
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SteamCMD
+        run: |
+          sudo add-apt-repository multiverse
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y steamcmd
+
+      - name: Query Steam build info
+        id: steam
+        run: |
+          steamcmd \
+            +login anonymous \
+            +app_info_update 1 \
+            +app_info_print $APP_ID \
+            +quit > appinfo.txt
+
+          BUILD_ID=$(grep -oP '"buildid"\s+"\K[0-9]+' appinfo.txt | head -n1)
+
+          echo "buildid=$BUILD_ID" >> "$GITHUB_OUTPUT"
+
+          echo "Build ID: $BUILD_ID"
+
+      - name: Check if image already exists
+        id: check
+        run: |
+          HTTP_CODE=$(curl \
+            -s \
+            -o /dev/null \
+            -w "%{http_code}" \
+            "https://hub.docker.com/v2/repositories/${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}/tags/${{ steps.steam.outputs.buildid }}/")
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip if already published
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          echo "Build already published."
+          exit 0
+
+      - name: Setup Buildx
+        if: steps.check.outputs.exists != 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        if: steps.check.outputs.exists != 'true'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Generate tags
+        id: tags
+        if: steps.check.outputs.exists != 'true'
+        run: |
+          TAGS="${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${{ steps.steam.outputs.buildid }}"
+          TAGS="$TAGS,${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:latest"
+
+          if [ -n "${{ steps.steam.outputs.version }}" ]; then
+            TAGS="$TAGS,${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${{ steps.steam.outputs.version }}"
+          fi
+
+          echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
+
+          echo "$TAGS"
+
+      - name: Build and Push
+        if: steps.check.outputs.exists != 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          build-args: |
+            BUILD_ID=${{ steps.steam.outputs.buildid }}
+          tags: ${{ steps.tags.outputs.tags }}

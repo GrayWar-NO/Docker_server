@@ -1,6 +1,11 @@
 # Use the official SteamCMD image as base
 FROM cm2network/steamcmd:root
 
+ARG BUILD_ID=unknown
+
+LABEL org.opencontainers.image.title="Nuclear Option Dedicated Server"
+LABEL steam.buildid="${BUILD_ID}"
+
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends unzip wget file jq
 
 USER steam
