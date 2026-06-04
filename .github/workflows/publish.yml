@@ -15,28 +15,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install SteamCMD
-        run: |
-          sudo add-apt-repository multiverse
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y steamcmd
-
       - name: Query Steam build info
         id: steam
+        env:
+          APP_ID: ${{ env.APP_ID }}
         run: |
-          steamcmd \
-            +login anonymous \
-            +app_info_update 1 \
-            +app_info_print $APP_ID \
-            +quit > appinfo.txt
-
-          BUILD_ID=$(grep -oP '"buildid"\s+"\K[0-9]+' appinfo.txt | head -n1)
-
+          curl -s "https://api.steamcmd.net/v1/info/${APP_ID}" > appinfo.json
+      
+          BUILD_ID=$(jq -r \
+            ".data.\"${APP_ID}\".depots.branches.public.buildid" \
+            appinfo.json)
+      
           echo "buildid=$BUILD_ID" >> "$GITHUB_OUTPUT"
-
           echo "Build ID: $BUILD_ID"
-
       - name: Check if image already exists
         id: check
         run: |
