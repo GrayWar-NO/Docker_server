@@ -9,7 +9,7 @@ jobs:
 
     env:
       APP_ID: "3930080"
-      IMAGE_NAME: nuclear-option-server
+      IMAGE_NAME: graywarno/no-server
 
     steps:
       - name: Checkout
