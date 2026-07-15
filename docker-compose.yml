@@ -25,7 +25,7 @@ services:
       - ./config/missions:/home/steam/NuclearOption-Missions
 
       # BepInEx plugins
-      - ./config/BepInEx/plugins:/home/steam/Steam/steamapps/common/NuclearOptionServer/BepInEx/plugins
+      - ./config/BepInEx/plugins:/home/steam/plugins
 
       # Ban list file
       - ./config/ban_list.txt:/home/steam/Steam/steamapps/common/NuclearOptionServer/ban_list.txt

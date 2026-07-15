@@ -22,7 +22,6 @@ RUN ./steamcmd.sh \
     +app_info_update 1 \
     +app_info_print 3930080 \
     +app_update 3930080 validate \
-    +download_depot 3930080 1006\
     +quit && \
     ./steamcmd.sh \
     +force_install_dir $SERVER_DIR \
