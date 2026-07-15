@@ -32,3 +32,6 @@ services:
 
       # BepInEx log output
       - ./config/BepInEx/LogOutput.log:/home/steam/Steam/steamapps/common/NuclearOptionServer/BepInEx/LogOutput.log
+
+      # CA certificates for the embedded gRPC implementation.
+      - ./CA:/home/steam/Steam/steamapps/common/NuclearOptionServer/CA
