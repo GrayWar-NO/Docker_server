@@ -67,7 +67,7 @@ jobs:
 
       - name: Generate tags
         id: tags
-        if: steps.check.outputs.exists != 'true'
+        if: steps.check.outputs.exists != 'true' || inputs.force == true
         run: |
           TAGS="${{ secrets.DOCKERHUB_REPO_OWNER }}/${IMAGE_NAME}:${{ steps.steam.outputs.buildid }}"
           TAGS="$TAGS,${{ secrets.DOCKERHUB_REPO_OWNER }}/${IMAGE_NAME}:latest"
@@ -81,7 +81,7 @@ jobs:
           echo "$TAGS"
 
       - name: Build and Push
-        if: steps.check.outputs.exists != 'true'
+        if: steps.check.outputs.exists != 'true' || inputs.force == true
         uses: docker/build-push-action@v6
         with:
           context: .
