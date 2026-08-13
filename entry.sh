@@ -15,4 +15,13 @@ cp -r /home/steam/plugins "$SERVER_DIR/BepInEx/plugins"
 
 cd "$SERVER_DIR" || exit 1
 
-exec ./run_bepinex.sh NuclearOptionServer.x86_64 -limitframerate 120
+# Default framerate to 120 if null. Mainly for backwards compatibility of older versions
+if [[ -z FRAMERATE ]]; then
+    FRAMERATE=120
+fi
+
+if [[ $ENABLE_LOGS == true ]]; then
+    exec ./run_bepinex.sh NuclearOptionServer.x86_64 -limitframerate $FRAMERATE -logFile ./logs/server-$(date +%Y-%m-%d-%H-%M-%S).log
+else
+    exec ./run_bepinex.sh NuclearOptionServer.x86_64 -limitframerate $FRAMERATE
+

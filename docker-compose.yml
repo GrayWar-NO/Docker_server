@@ -15,6 +15,8 @@ services:
 
     environment:
       DOCKER_HOST: http://socket-proxy:2375
+      FRAMERATE: 120
+      ENABLE_LOGS: true
 
     volumes:
       # BepInEx config files (settings.json, etc.)
@@ -37,6 +39,9 @@ services:
 
       # CA certificates for the embedded gRPC implementation.
       - ./CA:/home/steam/Steam/steamapps/common/NuclearOptionServer/CA
+
+      # Logs folder (Enable with ENABLE_LOGS)
+      - ./logs:home/steam/Steam/steamapps/common/NuclearOptionServer/logs
 
   socket-proxy:
     restart: always
