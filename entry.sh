@@ -16,7 +16,7 @@ cp -r /home/steam/plugins "$SERVER_DIR/BepInEx/plugins"
 cd "$SERVER_DIR" || exit 1
 
 # Default framerate to 120 if null. Mainly for backwards compatibility of older versions
-if [[ -z FRAMERATE ]]; then
+if [[ -z $FRAMERATE ]]; then
     FRAMERATE=120
 fi
 
