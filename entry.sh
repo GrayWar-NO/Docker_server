@@ -24,4 +24,4 @@ if [[ $ENABLE_LOGS == true ]]; then
     exec ./run_bepinex.sh NuclearOptionServer.x86_64 -limitframerate $FRAMERATE -logFile ./logs/server-$(date +%Y-%m-%d-%H-%M-%S).log
 else
     exec ./run_bepinex.sh NuclearOptionServer.x86_64 -limitframerate $FRAMERATE
-
+fi
