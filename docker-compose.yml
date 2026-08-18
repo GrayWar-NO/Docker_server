@@ -41,7 +41,7 @@ services:
       - ./CA:/home/steam/Steam/steamapps/common/NuclearOptionServer/CA
 
       # Logs folder (Enable with ENABLE_LOGS)
-      - ./logs:home/steam/Steam/steamapps/common/NuclearOptionServer/logs
+      - ./logs:/home/steam/Steam/steamapps/common/NuclearOptionServer/logs
 
   socket-proxy:
     restart: always

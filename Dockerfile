@@ -31,6 +31,8 @@ RUN ./steamcmd.sh \
 
 WORKDIR /home/steam
 
+RUN mkdir -p ./plugins
+
 RUN set -eux; \
     BEPINEX_URL=$(wget -qO- https://api.github.com/repos/BepInEx/BepInEx/releases/latest \
         | jq -r '.assets[] | select(.name | test("^BepInEx_linux_x64_.*\\.zip$")) | .browser_download_url'); \
