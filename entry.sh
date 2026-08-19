@@ -11,7 +11,8 @@ if [ -f "$SERVER_DIR/DedicatedServerConfig.json" ]; then
     chown steam:steam "$SERVER_DIR/DedicatedServerConfig.json"
 fi
 
-cp -r /home/steam/plugins "$SERVER_DIR/BepInEx/plugins"
+rm -r "$SERVER_DIR/BepInEx/plugins/"
+cp -r /home/steam/plugins "$SERVER_DIR/BepInEx/"
 
 cd "$SERVER_DIR" || exit 1
 
