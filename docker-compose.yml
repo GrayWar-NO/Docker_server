@@ -17,6 +17,7 @@ services:
       DOCKER_HOST: http://socket-proxy:2375
       FRAMERATE: 120
       ENABLE_LOGS: true
+      ENABLE_LOG_COMPRESSION: true
 
     volumes:
       # BepInEx config files (settings.json, etc.)

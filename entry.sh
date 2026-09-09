@@ -21,6 +21,13 @@ if [[ -z $FRAMERATE ]]; then
     FRAMERATE=120
 fi
 
+if [[ $ENABLE_LOG_COMPRESSION == true ]]; then
+    for f in /home/steam/Steam/steamapps/common/NuclearOptionServer/logs/*.log; do
+        tar -czf "$f.tar.gz" "$f"
+        rm $f
+    done
+fi
+
 if [[ $ENABLE_LOGS == true ]]; then
     exec ./run_bepinex.sh NuclearOptionServer.x86_64 -limitframerate "$FRAMERATE" -logFile "./logs/server-$(date +%Y-%m-%d-%H-%M-%S).log"
 else
